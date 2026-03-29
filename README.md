@@ -1,4 +1,4 @@
-﻿# Caregiver Support AI MVP
+# Caregiver Support AI MVP
 
 This project is a local prototype of a caregiver-support assistant for family members or close friends supporting a distressed person. It uses explicit state, constrained action selection, playbook retrieval, rule checks, turn logging, and an expert review gate.
 
