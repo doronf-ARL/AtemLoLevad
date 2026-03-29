@@ -1,0 +1,26 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Draft Review</title>
+    <style>
+      body { font-family: Georgia, serif; margin: 2rem auto; max-width: 1000px; }
+      nav a { margin-right: 1rem; color: #92400e; }
+      .card { border: 1px solid #d1d5db; padding: 1rem; border-radius: 10px; background: #fafaf9; margin-bottom: 1rem; }
+      textarea, input[type="text"] { width: 100%; }
+      textarea { min-height: 150px; }
+      pre { white-space: pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <nav><a href="/">Home</a><a href="/patients">Patients</a><a href="/caregivers">Caregivers</a><a href="/messages">Messages</a><a href="/expert">Expert</a></nav>
+    <h1>Draft {{ draft.id }}</h1>
+    <div class="card"><p><strong>Thread:</strong> <a href="/messages/threads/{{ thread.id }}">{{ thread.title }}</a></p><p><strong>Patient:</strong> {{ patient.name }}</p><p><strong>Caregiver:</strong> {{ caregiver.name }}</p></div>
+    <div class="card"><h2>Caregiver message</h2><p>{{ message.content }}</p></div>
+    <div class="card"><h2>Interaction state</h2><pre>{{ interaction.structured_observations }}</pre></div>
+    <div class="card"><h2>Draft</h2><p>{{ draft.revised_text or draft.draft_text }}</p><pre>{{ draft.rule_check_results }}</pre></div>
+    <form method="post" action="/expert/drafts/{{ draft.id }}/review/approve" class="card"><label>Approve comment</label><input type="text" name="comment" /><button type="submit">Approve</button></form>
+    <form method="post" action="/expert/drafts/{{ draft.id }}/review/edit" class="card"><label>Edited text</label><textarea name="edited_text">{{ draft.revised_text or draft.draft_text }}</textarea><label>Comment</label><input type="text" name="comment" /><button type="submit">Edit and approve</button></form>
+    <form method="post" action="/expert/drafts/{{ draft.id }}/review/reject" class="card"><label>Reject comment</label><input type="text" name="comment" /><button type="submit">Reject</button></form>
+  </body>
+</html>

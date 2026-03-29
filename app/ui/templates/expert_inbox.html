@@ -1,0 +1,25 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Expert Inbox</title>
+    <style>
+      body { font-family: Georgia, serif; margin: 2rem auto; max-width: 1000px; }
+      nav a { margin-right: 1rem; color: #92400e; }
+      .card { border: 1px solid #d1d5db; padding: 1rem; border-radius: 10px; background: #fafaf9; margin-bottom: 1rem; }
+    </style>
+  </head>
+  <body>
+    <nav><a href="/">Home</a><a href="/patients">Patients</a><a href="/caregivers">Caregivers</a><a href="/messages">Messages</a><a href="/expert">Expert</a></nav>
+    <h1>Expert Inbox</h1>
+    {% for item in drafts %}
+    <div class="card">
+      <p><strong>Draft {{ item.draft.id }}</strong> for <a href="/messages/threads/{{ item.thread.id }}">{{ item.thread.title }}</a></p>
+      <p>{{ item.message.content }}</p>
+      <p><a href="/expert/drafts/{{ item.draft.id }}/review">Review draft</a></p>
+    </div>
+    {% else %}
+    <div class="card"><p>No pending drafts.</p></div>
+    {% endfor %}
+  </body>
+</html>

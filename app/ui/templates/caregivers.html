@@ -1,0 +1,49 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Caregivers</title>
+    <style>
+      body { font-family: Georgia, serif; margin: 2rem auto; max-width: 1100px; }
+      nav a { margin-right: 1rem; color: #92400e; }
+      .grid { display: grid; grid-template-columns: 380px 1fr; gap: 1rem; }
+      .card { border: 1px solid #d1d5db; padding: 1rem; border-radius: 10px; background: #fafaf9; margin-bottom: 1rem; }
+      input, textarea, select { width: 100%; margin-bottom: 0.75rem; }
+    </style>
+  </head>
+  <body>
+    <nav><a href="/">Home</a><a href="/patients">Patients</a><a href="/caregivers">Caregivers</a><a href="/messages">Messages</a></nav>
+    <h1>Caregivers</h1>
+    <div class="grid">
+      <div class="card">
+        <h2>Add Caregiver</h2>
+        <form method="post" action="/caregivers/create">
+          <label>Name</label>
+          <input name="name" required />
+          <label>Notes</label>
+          <textarea name="notes"></textarea>
+          <label>Traits (comma separated)</label>
+          <input name="traits" />
+          <label>States (comma separated)</label>
+          <input name="states" />
+          <label>Behavior patterns (comma separated)</label>
+          <input name="behaviors" />
+          <label>Risk level</label>
+          <select name="risk_level"><option>low</option><option>medium</option><option>high</option></select>
+          <button type="submit">Create caregiver</button>
+        </form>
+      </div>
+      <div>
+        {% for caregiver in caregivers %}
+        <div class="card">
+          <h3><a href="/caregivers/{{ caregiver.id }}">{{ caregiver.name }}</a></h3>
+          <p>Risk: {{ caregiver.risk.get('level', 'unknown') }}</p>
+          <p>{{ caregiver.notes or 'No notes yet.' }}</p>
+        </div>
+        {% else %}
+        <div class="card"><p>No caregivers yet.</p></div>
+        {% endfor %}
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,119 @@
+Metadata-Version: 2.4
+Name: caregiver-support-ai
+Version: 0.1.0
+Summary: Inspectable caregiver-support AI prototype with expert review workflow.
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi<1.0,>=0.115
+Requires-Dist: uvicorn[standard]<1.0,>=0.30
+Requires-Dist: sqlmodel<1.0,>=0.0.22
+Requires-Dist: jinja2<4.0,>=3.1
+Requires-Dist: python-multipart<1.0,>=0.0.9
+Provides-Extra: dev
+Requires-Dist: pytest<9.0,>=8.0; extra == "dev"
+Requires-Dist: httpx<1.0,>=0.27; extra == "dev"
+
+# Caregiver Support AI MVP
+
+This project is a working local prototype of a caregiver-support assistant for family members or close friends supporting a distressed person. It is structured around explicit state, constrained action selection, playbook retrieval, rule checks, full turn logging, and an expert review gate.
+
+## Architecture Summary
+
+The backend is a FastAPI app with SQLite storage via SQLModel. The main message pipeline is deterministic and inspectable:
+
+1. Parse caregiver text into structured observations
+2. Merge into structured case state
+3. Select one primary action
+4. Retrieve 1 to 3 playbooks and relevant principles
+5. Generate a concise caregiver-facing draft
+6. Run explicit Python rule checks and revise once if needed
+7. Queue for expert approval
+8. Persist logs and artifacts for every turn
+
+The implementation keeps prompt and model abstractions separate from business logic, but the MVP uses deterministic services instead of a live LLM so it runs immediately after setup.
+
+## Setup
+
+Requirements:
+
+- Python 3.11+
+
+Install dependencies:
+
+```bash
+python -m pip install -e .[dev]
+```
+
+Run the app:
+
+```bash
+uvicorn app.main:app --reload
+```
+
+Open:
+
+- `http://127.0.0.1:8000/`
+- `http://127.0.0.1:8000/expert`
+- `http://127.0.0.1:8000/debug`
+
+## Environment Variables
+
+The MVP currently uses in-code defaults in `app/core/config.py`. The main values are:
+
+- `database_url`: defaults to `sqlite:///./caregiver_support.db`
+- `expert_review_mode`: defaults to `manual_review_required`
+- `prompt_version`, `model_version`, `retrieval_version`, `rule_set_version`: used in logs
+
+## Seed Data
+
+The app seeds example content automatically on startup:
+
+- one caregiver thread
+- patient and caregiver profiles
+- five playbooks
+- ten principles
+- five constraint rules
+
+The seed scenario models a war-related PTSD-like pattern with loud-noise triggering, caregiver anxiety, and over-questioning pressure.
+
+## API Highlights
+
+- `POST /threads`
+- `POST /threads/{id}/messages`
+- `GET /threads/{id}`
+- `GET /threads/{id}/messages`
+- `GET /expert/drafts/pending`
+- `POST /expert/drafts/{id}/approve`
+- `POST /expert/drafts/{id}/edit`
+- `POST /expert/drafts/{id}/reject`
+- `GET /playbooks`
+- `POST /playbooks`
+- `PATCH /playbooks/{id}`
+- `GET /principles`
+- `GET /rules`
+- `GET /debug/interactions/{id}`
+- `GET /debug/logs`
+
+## Testing
+
+Run:
+
+```bash
+pytest
+```
+
+Tests cover:
+
+- rule checker
+- state merge logic
+- retrieval ranking
+- action selection fallback
+- message-in to draft-out integration
+- expert edit flow
+
+## Known Limitations
+
+- The MVP uses deterministic parsing/generation, not a live LLM backend yet.
+- Authentication, role-based access control, and production safety controls are not implemented.
+- The caregiver UI is minimal; the expert/debug interfaces are intentionally lightweight.
+- There is no embedding retrieval or async job queue yet.

@@ -1,0 +1,51 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Caregiver Support AI</title>
+    <style>
+      body { font-family: Georgia, serif; margin: 2rem auto; max-width: 1100px; color: #1f2937; }
+      nav a { margin-right: 1rem; color: #92400e; }
+      .card { border: 1px solid #d1d5db; padding: 1rem; margin-bottom: 1rem; border-radius: 10px; background: #fafaf9; }
+      .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+      .stat { font-size: 2rem; margin: 0; }
+      select { width: 100%; margin-bottom: 0.75rem; }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/patients">Patients</a>
+      <a href="/caregivers">Caregivers</a>
+      <a href="/messages">Messages</a>
+      <a href="/expert">Expert</a>
+      <a href="/debug">Debug</a>
+    </nav>
+    <h1>Simulation Workspace</h1>
+    <p>Start with empty records and create simulated patients, caregivers, and message threads in the browser.</p>
+    <div class="card">
+      <h2>LLM Selection</h2>
+      <form method="post" action="/settings/llm">
+        <label>Provider</label>
+        <select name="provider">
+          <option value="openai" {% if llm.provider == 'openai' %}selected{% endif %}>OpenAI</option>
+          <option value="gemini" {% if llm.provider == 'gemini' %}selected{% endif %}>Gemini</option>
+        </select>
+        <label>Tier</label>
+        <select name="tier">
+          <option value="low_cost" {% if llm.tier == 'low_cost' %}selected{% endif %}>Low Cost</option>
+          <option value="best" {% if llm.tier == 'best' %}selected{% endif %}>Best</option>
+        </select>
+        <p>Current model: <strong>{{ llm.model }}</strong></p>
+        <button type="submit">Save LLM choice</button>
+      </form>
+      <p>OpenAI: `gpt-5-mini` or `gpt-5`. Gemini: `gemini-2.5-flash` or `gemini-2.5-pro`.</p>
+    </div>
+    <div class="grid">
+      <div class="card"><p class="stat">{{ patient_count }}</p><p>Patients</p></div>
+      <div class="card"><p class="stat">{{ caregiver_count }}</p><p>Caregivers</p></div>
+      <div class="card"><p class="stat">{{ thread_count }}</p><p>Threads</p></div>
+      <div class="card"><p class="stat">{{ pending_count }}</p><p>Pending expert drafts</p></div>
+    </div>
+  </body>
+</html>

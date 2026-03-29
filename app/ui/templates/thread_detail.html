@@ -1,0 +1,46 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Thread Detail</title>
+    <style>
+      body { font-family: Georgia, serif; margin: 2rem auto; max-width: 1000px; }
+      nav a { margin-right: 1rem; color: #92400e; }
+      .card { border: 1px solid #d1d5db; padding: 1rem; border-radius: 10px; background: #fafaf9; margin-bottom: 1rem; }
+      textarea { width: 100%; min-height: 120px; }
+      pre { white-space: pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <nav><a href="/">Home</a><a href="/patients">Patients</a><a href="/caregivers">Caregivers</a><a href="/messages">Messages</a><a href="/expert">Expert</a></nav>
+    <h1>{{ thread.title }}</h1>
+    <div class="card">
+      <p><strong>Patient:</strong> <a href="/patients/{{ thread.patient.id }}">{{ thread.patient.name }}</a></p>
+      <p><strong>Caregiver:</strong> <a href="/caregivers/{{ thread.caregiver.id }}">{{ thread.caregiver.name }}</a></p>
+    </div>
+    <div class="card">
+      <h2>Send Simulated Caregiver Message</h2>
+      <form method="post" action="/messages/threads/{{ thread.id }}/send">
+        <textarea name="content" required></textarea>
+        <button type="submit">Process message</button>
+      </form>
+    </div>
+    <div class="card">
+      <h2>Messages</h2>
+      {% for message in thread.messages %}
+      <p><strong>{{ message.sender_role }}</strong>: {{ message.content }}</p>
+      {% else %}
+      <p>No messages yet.</p>
+      {% endfor %}
+    </div>
+    <div class="card">
+      <h2>Drafts</h2>
+      {% for draft in thread.drafts %}
+      <p><a href="/expert/drafts/{{ draft.id }}/review">Draft {{ draft.id }}</a> action={{ draft.selected_action }} decision={{ draft.expert_decision }}</p>
+      <p>{{ draft.revised_text or draft.draft_text }}</p>
+      {% else %}
+      <p>No drafts yet.</p>
+      {% endfor %}
+    </div>
+  </body>
+</html>

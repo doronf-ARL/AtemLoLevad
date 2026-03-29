@@ -1,0 +1,10 @@
+﻿<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8"><title>Caregiver Detail</title><style>body { font-family: Georgia, serif; margin: 2rem auto; max-width: 900px; } nav a { margin-right: 1rem; color: #92400e; } .card { border: 1px solid #d1d5db; padding: 1rem; border-radius: 10px; background: #fafaf9; margin-bottom: 1rem; } pre { white-space: pre-wrap; }</style></head>
+  <body>
+    <nav><a href="/">Home</a><a href="/patients">Patients</a><a href="/caregivers">Caregivers</a><a href="/messages">Messages</a></nav>
+    <h1>{{ caregiver.name }}</h1>
+    <div class="card"><p><strong>Notes:</strong> {{ caregiver.notes or 'None' }}</p><pre>{{ {'traits': caregiver.traits, 'states': caregiver.states, 'behavior_patterns': caregiver.behavior_patterns, 'risk': caregiver.risk, 'confidence_summary': caregiver.confidence_summary} }}</pre></div>
+    <div class="card"><h2>Threads</h2>{% for thread in linked_threads %}<p><a href="/messages/threads/{{ thread.id }}">{{ thread.title }}</a></p>{% else %}<p>No threads yet.</p>{% endfor %}</div>
+  </body>
+</html>

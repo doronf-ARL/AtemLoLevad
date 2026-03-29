@@ -1,0 +1,69 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Patients</title>
+    <style>
+      body { font-family: Georgia, serif; margin: 2rem auto; max-width: 1200px; }
+      nav a { margin-right: 1rem; color: #92400e; }
+      .grid { display: grid; grid-template-columns: 430px 1fr; gap: 1rem; }
+      .card { border: 1px solid #d1d5db; padding: 1rem; border-radius: 10px; background: #fafaf9; margin-bottom: 1rem; }
+      input, textarea, select { width: 100%; margin-bottom: 0.75rem; }
+      textarea.story { min-height: 180px; }
+      .actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+      .actions button { flex: 1; min-width: 120px; }
+      .error { color: #b91c1c; font-weight: bold; }
+      .meta { color: #6b7280; font-size: 0.95rem; }
+    </style>
+  </head>
+  <body>
+    <nav><a href="/">Home</a><a href="/patients">Patients</a><a href="/caregivers">Caregivers</a><a href="/messages">Messages</a></nav>
+    <h1>Patients</h1>
+    <div class="grid">
+      <div class="card">
+        <h2>Add Patient</h2>
+        <p class="meta">Current LLM: {{ llm.provider }} / {{ llm.model }}</p>
+        {% if form_state.error %}<p class="error">{{ form_state.error }}</p>{% endif %}
+        <form method="post">
+          <label>Name</label>
+          <input name="name" value="{{ form_state.name }}" />
+          <label>Problem Type</label>
+          <select name="problem_type">
+            <option value="PTSD" {% if form_state.problem_type == 'PTSD' %}selected{% endif %}>PTSD</option>
+            <option value="eating_disorder" {% if form_state.problem_type == 'eating_disorder' %}selected{% endif %}>Eating Disorder</option>
+          </select>
+          <label>Background Story</label>
+          <textarea class="story" name="background_story">{{ form_state.background_story }}</textarea>
+          <div class="actions">
+            <button type="submit" formaction="/patients/randomize">Gen Random</button>
+            <button type="submit" formaction="/patients/fill-template">Fill Template</button>
+          </div>
+          <label>Notes</label>
+          <textarea name="notes">{{ form_state.notes }}</textarea>
+          <label>Traits (comma separated)</label>
+          <input name="traits" value="{{ form_state.traits }}" />
+          <label>States (comma separated)</label>
+          <input name="states" value="{{ form_state.states }}" />
+          <label>Triggers (comma separated)</label>
+          <input name="triggers" value="{{ form_state.triggers }}" />
+          <label>Behavior patterns (comma separated)</label>
+          <input name="behaviors" value="{{ form_state.behaviors }}" />
+          <label>Risk level</label>
+          <select name="risk_level"><option value="low" {% if form_state.risk_level == 'low' %}selected{% endif %}>low</option><option value="medium" {% if form_state.risk_level == 'medium' %}selected{% endif %}>medium</option><option value="high" {% if form_state.risk_level == 'high' %}selected{% endif %}>high</option></select>
+          <button type="submit" formaction="/patients/create">Create patient</button>
+        </form>
+      </div>
+      <div>
+        {% for patient in patients %}
+        <div class="card">
+          <h3><a href="/patients/{{ patient.id }}">{{ patient.name }}</a></h3>
+          <p>Risk: {{ patient.risk.get('level', 'unknown') }}</p>
+          <p>{{ patient.notes or 'No notes yet.' }}</p>
+        </div>
+        {% else %}
+        <div class="card"><p>No patients yet.</p></div>
+        {% endfor %}
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,48 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Messages</title>
+    <style>
+      body { font-family: Georgia, serif; margin: 2rem auto; max-width: 1100px; }
+      nav a { margin-right: 1rem; color: #92400e; }
+      .grid { display: grid; grid-template-columns: 380px 1fr; gap: 1rem; }
+      .card { border: 1px solid #d1d5db; padding: 1rem; border-radius: 10px; background: #fafaf9; margin-bottom: 1rem; }
+      input, select { width: 100%; margin-bottom: 0.75rem; }
+    </style>
+  </head>
+  <body>
+    <nav><a href="/">Home</a><a href="/patients">Patients</a><a href="/caregivers">Caregivers</a><a href="/messages">Messages</a><a href="/expert">Expert</a></nav>
+    <h1>Threads</h1>
+    <div class="grid">
+      <div class="card">
+        <h2>Create Thread</h2>
+        {% if patients and caregivers %}
+        <form method="post" action="/messages/threads/create">
+          <label>Title</label>
+          <input name="title" required />
+          <label>Patient</label>
+          <select name="patient_id">{% for patient in patients %}<option value="{{ patient.id }}">{{ patient.name }}</option>{% endfor %}</select>
+          <label>Caregiver</label>
+          <select name="caregiver_id">{% for caregiver in caregivers %}<option value="{{ caregiver.id }}">{{ caregiver.name }}</option>{% endfor %}</select>
+          <button type="submit">Create thread</button>
+        </form>
+        {% else %}
+        <p>Create at least one patient and one caregiver first.</p>
+        {% endif %}
+      </div>
+      <div>
+        {% for thread in threads %}
+        <div class="card">
+          <h3><a href="/messages/threads/{{ thread.id }}">{{ thread.title }}</a></h3>
+          <p>Patient: {{ thread.patient.name if thread.patient else 'Missing' }}</p>
+          <p>Caregiver: {{ thread.caregiver.name if thread.caregiver else 'Missing' }}</p>
+          <p>{{ thread.messages|length }} messages, {{ thread.drafts|length }} drafts</p>
+        </div>
+        {% else %}
+        <div class="card"><p>No threads yet.</p></div>
+        {% endfor %}
+      </div>
+    </div>
+  </body>
+</html>
